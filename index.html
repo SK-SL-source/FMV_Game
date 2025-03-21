@@ -41,22 +41,45 @@
         <button onclick="chooseScene('TEST001B.mp4')">選擇 2：去咖啡廳</button>
     </div>
 
-    <script>
-        function chooseScene(videoFile) {
-            let videoElement = document.getElementById("game-video");
-            let choicesDiv = document.getElementById("choices");
+<script>
+    let videoElement = document.getElementById("game-video");
+    let choicesDiv = document.getElementById("choices");
 
-            // 隱藏選項，切換影片並自動播放
-            choicesDiv.style.display = "none";
-            videoElement.src = videoFile;
-            videoElement.play();
+    function chooseScene(videoFile) {
+        // 隱藏選項，切換影片並自動播放
+        choicesDiv.style.display = "none";
+        videoElement.src = videoFile;
+        videoElement.play();
 
-            // 影片播放完畢後再顯示選項
-            videoElement.onended = function () {
-                choicesDiv.style.display = "block";
-            };
+        // 影片播放完畢後，檢查是否在全螢幕模式
+        videoElement.onended = function () {
+            if (document.fullscreenElement) {
+                document.addEventListener("fullscreenchange", handleFullscreenExit);
+            } else {
+                choicesDiv.style.display = "block"; // 直接顯示選項
+            }
+        };
+    }
+
+    // 當全螢幕模式結束時，顯示選項
+    function handleFullscreenExit() {
+        if (!document.fullscreenElement) {
+            choicesDiv.style.display = "block";
+            document.removeEventListener("fullscreenchange", handleFullscreenExit);
         }
-    </script>
+    }
 
-</body>
-</html>
+    // 讓影片播放時自動進入全螢幕
+    videoElement.addEventListener("play", function () {
+        if (videoElement.requestFullscreen) {
+            videoElement.requestFullscreen();
+        } else if (videoElement.mozRequestFullScreen) {
+            videoElement.mozRequestFullScreen(); // Firefox
+        } else if (videoElement.webkitRequestFullscreen) {
+            videoElement.webkitRequestFullscreen(); // Chrome, Safari and Opera
+        } else if (videoElement.msRequestFullscreen) {
+            videoElement.msRequestFullscreen(); // IE/Edge
+        }
+    });
+</script>
+
