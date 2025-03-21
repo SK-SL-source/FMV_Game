@@ -12,7 +12,7 @@
         }
 
         video {
-            display: none; /* 預設隱藏影片，等開始遊戲後才顯示 */
+            display: none; /* 預設隱藏影片 */
             margin: 0 auto; 
             width: 800px;
         }
@@ -43,33 +43,20 @@
             border-radius: 10px;
             text-align: center;
             z-index: 1000;
-        }
-
-        button {
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            background: white;
-            border: none;
-            border-radius: 5px;
-            color: black;
+            opacity: 1; /* 確保選項不會被隱藏 */
         }
     </style>
 </head>
 <body>
     <h1>FMV 遊戲 Demo</h1>
 
-    <!-- 開始遊戲按鈕 -->
     <button id="start-button" onclick="startGame()">開始遊戲</button>
 
-    <!-- 影片播放 -->
     <video id="game-video" width="800" controls>
         <source src="scene1.mp4" type="video/mp4">
         你的瀏覽器不支援影片播放。
     </video>
 
-    <!-- 選項按鈕區 -->
     <div id="choices">
         <button onclick="chooseScene('scene2.mp4')">選擇 1：去公園</button>
         <button onclick="chooseScene('scene3.mp4')">選擇 2：去咖啡廳</button>
@@ -81,64 +68,38 @@
         let startButton = document.getElementById("start-button");
 
         function startGame() {
-            console.log("遊戲開始"); // 確認按鈕有觸發
-            startButton.style.display = "none"; // 隱藏開始遊戲按鈕
-            videoElement.style.display = "block"; // 顯示影片
-            videoElement.play(); // 播放影片
-
+            startButton.style.display = "none";
+            videoElement.style.display = "block";
+            videoElement.play();
             videoElement.onended = function () {
-                console.log("影片播放結束 - 嘗試顯示選項"); // 確保事件有被執行
+                console.log("影片播放結束 - 嘗試顯示選項");
                 showChoicesInFullscreen();
             };
-
             enterFullscreen(videoElement);
         }
 
         function showChoicesInFullscreen() {
             console.log("進入 showChoicesInFullscreen()");
-            choicesDiv.style.display = "block"; 
-            choicesDiv.style.position = "fixed";
-            choicesDiv.style.top = "50%";
-            choicesDiv.style.left = "50%";
-            choicesDiv.style.transform = "translate(-50%, -50%)";
-            choicesDiv.style.background = "rgba(0, 0, 0, 0.8)";
-            choicesDiv.style.padding = "20px";
-            choicesDiv.style.borderRadius = "10px";
-            choicesDiv.style.textAlign = "center";
-            choicesDiv.style.zIndex = "1000"; // 確保選項在最上層
+            setTimeout(() => {
+                choicesDiv.style.display = "block";
+            }, 500);
         }
 
         function chooseScene(videoFile) {
-            console.log("選擇了新場景：" + videoFile);
-            choicesDiv.style.display = "none"; // 隱藏選項
+            choicesDiv.style.display = "none";
             videoElement.src = videoFile;
             videoElement.play();
-
             videoElement.onended = function () {
                 showChoicesInFullscreen();
             };
         }
 
         function enterFullscreen(element) {
-            if (element.requestFullscreen) {
-                element.requestFullscreen();
-            } else if (element.mozRequestFullScreen) {
-                element.mozRequestFullScreen();
-            } else if (element.webkitRequestFullscreen) {
-                element.webkitRequestFullscreen();
-            } else if (element.msRequestFullscreen) {
-                element.msRequestFullscreen();
-            }
+            if (element.requestFullscreen) element.requestFullscreen();
+            else if (element.mozRequestFullScreen) element.mozRequestFullScreen();
+            else if (element.webkitRequestFullscreen) element.webkitRequestFullscreen();
+            else if (element.msRequestFullscreen) element.msRequestFullscreen();
         }
-
-        // 監聽全螢幕模式變化
-        document.addEventListener("fullscreenchange", function() {
-            console.log("偵測到全螢幕變化");
-            if (!document.fullscreenElement) {
-                console.log("退出全螢幕模式，顯示選項");
-                choicesDiv.style.display = "block";
-            }
-        });
     </script>
 </body>
 </html>
