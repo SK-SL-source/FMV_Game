@@ -29,6 +29,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            z-index: 1000;
         }
 
         #choices {
@@ -41,6 +42,7 @@
             padding: 20px;
             border-radius: 10px;
             text-align: center;
+            z-index: 1000;
         }
 
         button {
@@ -63,76 +65,80 @@
 
     <!-- 影片播放 -->
     <video id="game-video" width="800" controls>
-        <source src="TEST001.mp4" type="video/mp4">
+        <source src="scene1.mp4" type="video/mp4">
         你的瀏覽器不支援影片播放。
     </video>
 
     <!-- 選項按鈕區 -->
     <div id="choices">
-        <button onclick="chooseScene('TEST001A.mp4')">選擇 1：去公園</button>
-        <button onclick="chooseScene('TEST001B.mp4')">選擇 2：去咖啡廳</button>
+        <button onclick="chooseScene('scene2.mp4')">選擇 1：去公園</button>
+        <button onclick="chooseScene('scene3.mp4')">選擇 2：去咖啡廳</button>
     </div>
 
-<script>
-    let videoElement = document.getElementById("game-video");
-    let choicesDiv = document.getElementById("choices");
-    let startButton = document.getElementById("start-button");
+    <script>
+        let videoElement = document.getElementById("game-video");
+        let choicesDiv = document.getElementById("choices");
+        let startButton = document.getElementById("start-button");
 
-    function startGame() {
-        startButton.style.display = "none"; // 隱藏開始遊戲按鈕
-        videoElement.style.display = "block"; // 顯示影片
-        videoElement.play(); // 播放影片
+        function startGame() {
+            console.log("遊戲開始"); // 確認按鈕有觸發
+            startButton.style.display = "none"; // 隱藏開始遊戲按鈕
+            videoElement.style.display = "block"; // 顯示影片
+            videoElement.play(); // 播放影片
 
-        // 影片播放完畢後顯示選項
-        videoElement.onended = function () {
-            console.log("影片播放結束"); // 確認事件有被觸發
-            showChoicesInFullscreen();
-        };
+            videoElement.onended = function () {
+                console.log("影片播放結束 - 嘗試顯示選項"); // 確保事件有被執行
+                showChoicesInFullscreen();
+            };
 
-        // 進入全螢幕模式
-        enterFullscreen(videoElement);
-    }
-
-    function showChoicesInFullscreen() {
-        console.log("進入 showChoicesInFullscreen()");
-        choicesDiv.style.display = "block"; // 顯示選項
-        choicesDiv.style.position = "fixed";
-        choicesDiv.style.top = "50%";
-        choicesDiv.style.left = "50%";
-        choicesDiv.style.transform = "translate(-50%, -50%)";
-        choicesDiv.style.background = "rgba(0, 0, 0, 0.8)";
-        choicesDiv.style.padding = "20px";
-        choicesDiv.style.borderRadius = "10px";
-        choicesDiv.style.textAlign = "center";
-    }
-
-    function chooseScene(videoFile) {
-        choicesDiv.style.display = "none"; // 隱藏選項
-        videoElement.src = videoFile;
-        videoElement.play();
-
-        videoElement.onended = function () {
-            showChoicesInFullscreen();
-        };
-    }
-
-    function enterFullscreen(element) {
-        if (element.requestFullscreen) {
-            element.requestFullscreen();
-        } else if (element.mozRequestFullScreen) {
-            element.mozRequestFullScreen();
-        } else if (element.webkitRequestFullscreen) {
-            element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) {
-            element.msRequestFullscreen();
+            enterFullscreen(videoElement);
         }
-    }
 
-    // 監聽全螢幕變化
-    document.addEventListener("fullscreenchange", function() {
-        if (!document.fullscreenElement) {
-            console.log("退出全螢幕模式");
-            choicesDiv.style.display = "block";
+        function showChoicesInFullscreen() {
+            console.log("進入 showChoicesInFullscreen()");
+            choicesDiv.style.display = "block"; 
+            choicesDiv.style.position = "fixed";
+            choicesDiv.style.top = "50%";
+            choicesDiv.style.left = "50%";
+            choicesDiv.style.transform = "translate(-50%, -50%)";
+            choicesDiv.style.background = "rgba(0, 0, 0, 0.8)";
+            choicesDiv.style.padding = "20px";
+            choicesDiv.style.borderRadius = "10px";
+            choicesDiv.style.textAlign = "center";
+            choicesDiv.style.zIndex = "1000"; // 確保選項在最上層
         }
-    });
-</script>
+
+        function chooseScene(videoFile) {
+            console.log("選擇了新場景：" + videoFile);
+            choicesDiv.style.display = "none"; // 隱藏選項
+            videoElement.src = videoFile;
+            videoElement.play();
+
+            videoElement.onended = function () {
+                showChoicesInFullscreen();
+            };
+        }
+
+        function enterFullscreen(element) {
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            }
+        }
+
+        // 監聽全螢幕模式變化
+        document.addEventListener("fullscreenchange", function() {
+            console.log("偵測到全螢幕變化");
+            if (!document.fullscreenElement) {
+                console.log("退出全螢幕模式，顯示選項");
+                choicesDiv.style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>
