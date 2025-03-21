@@ -4,26 +4,28 @@
     <meta charset="UTF-8">
     <title>FMV 遊戲 Demo</title>
     <style>
+        /* 設定整個畫面置中 */
         body {
-            text-align: center; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
             font-family: Arial, sans-serif;
             background-color: black;
             color: white;
+            text-align: center;
         }
 
-        #video-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* 預設隱藏影片 */
+        /* 隱藏影片 */
         video {
             display: none;
             width: 100%;
+            max-width: 800px;
         }
 
+        /* 讓「開始遊戲」按鈕完全置中 */
         #start-button {
             padding: 15px 30px;
             font-size: 20px;
@@ -32,13 +34,10 @@
             border: none;
             border-radius: 5px;
             color: black;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             z-index: 10;
         }
 
+        /* 選項區 */
         #choices {
             display: none;
             position: absolute;
@@ -62,17 +61,19 @@
 <body>
     <h1>FMV 遊戲 Demo</h1>
 
-    <div id="video-container">
-        <button id="start-button" onclick="startGame()">開始遊戲</button>
-        <video id="game-video" controls muted>
-            <source src="TEST001.mp4" type="video/mp4">
-            你的瀏覽器不支援影片播放。
-        </video>
+    <!-- 開始遊戲按鈕 -->
+    <button id="start-button" onclick="startGame()">開始遊戲</button>
 
-        <div id="choices">
-            <button onclick="chooseScene('TEST001A.mp4')">選擇 1：去公園</button>
-            <button onclick="chooseScene('TEST001B.mp4')">選擇 2：去咖啡廳</button>
-        </div>
+    <!-- 影片 -->
+    <video id="game-video" controls muted>
+        <source src="TEST001.mp4" type="video/mp4">
+        你的瀏覽器不支援影片播放。
+    </video>
+
+    <!-- 選項 -->
+    <div id="choices">
+        <button onclick="chooseScene('TEST001A.mp4')">選擇 1：去公園</button>
+        <button onclick="chooseScene('TEST001B.mp4')">選擇 2：去咖啡廳</button>
     </div>
 
     <script>
