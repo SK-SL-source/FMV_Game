@@ -72,8 +72,8 @@
 
     <!-- 選項 -->
     <div id="choices">
-        <button onclick="chooseScene('TEST001A.mp4')">選擇 1：口交</button>
-        <button onclick="chooseScene('TEST001B.mp4')">選擇 2：插入</button>
+        <button onclick="chooseScene('TEST001A.mp4')">選擇 1：去公園</button>
+        <button onclick="chooseScene('TEST001B.mp4')">選擇 2：去咖啡廳</button>
     </div>
 
     <script>
@@ -84,17 +84,17 @@
         function startGame() {
             startBtn.style.display = "none"; // 隱藏開始按鈕
             video.style.display = "block"; // 顯示影片
-            enterFullscreen(video); // 進入全螢幕
+            enterFullscreen(video); // 進入全螢幕並橫屏
             video.play();
         }
 
         function chooseScene(src) {
             choices.style.display = "none"; // 隱藏選項
             video.src = src;
-            enterFullscreen(video); // 進入全螢幕
+            enterFullscreen(video); // 進入全螢幕並橫屏
             video.play();
             video.onended = () => {
-                exitFullscreenAndShowChoices();
+                exitFullscreenAndKeepLandscape();
             };
         }
 
@@ -103,18 +103,21 @@
             choices.style.display = "block";
         }
 
-        function exitFullscreenAndShowChoices() {
-            console.log("影片播放結束 - 嘗試退出全螢幕並顯示選項");
+        function exitFullscreenAndKeepLandscape() {
+            console.log("影片播放結束 - 嘗試退出全螢幕並保持橫屏");
 
             if (document.fullscreenElement) {
                 document.exitFullscreen().then(() => {
                     console.log("成功退出全螢幕，顯示選項");
+                    lockLandscape(); // 退出全螢幕後，強制保持橫屏
                     showChoices();
                 }).catch((err) => {
                     console.log("退出全螢幕失敗: " + err);
+                    lockLandscape();
                     showChoices();
                 });
             } else {
+                lockLandscape();
                 showChoices();
             }
         }
@@ -129,12 +132,22 @@
             } else if (element.msRequestFullscreen) {
                 element.msRequestFullscreen();
             }
+
+            lockLandscape(); // 進入全螢幕時，切換橫屏
         }
 
-        // 當影片結束時，自動退出全螢幕並顯示選項
+        function lockLandscape() {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock("landscape").catch(err => {
+                    console.log("無法鎖定橫屏:", err);
+                });
+            }
+        }
+
+        // 當影片結束時，自動退出全螢幕並保持橫屏
         video.onended = function () {
-            console.log("影片播放結束 - 嘗試退出全螢幕並顯示選項");
-            exitFullscreenAndShowChoices();
+            console.log("影片播放結束 - 嘗試退出全螢幕並保持橫屏");
+            exitFullscreenAndKeepLandscape();
         };
     </script>
 </body>
