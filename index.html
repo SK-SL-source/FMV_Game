@@ -18,7 +18,9 @@
             margin: 0 auto;
         }
 
+        /* 預設隱藏影片 */
         video {
+            display: none;
             width: 100%;
         }
 
@@ -68,8 +70,8 @@
         </video>
 
         <div id="choices">
-            <button onclick="chooseScene('TEST001A.mp4')">選擇 1：口交</button>
-            <button onclick="chooseScene('TEST001B.mp4')">選擇 2：插入</button>
+            <button onclick="chooseScene('TEST001A.mp4')">選擇 1：去公園</button>
+            <button onclick="chooseScene('TEST001B.mp4')">選擇 2：去咖啡廳</button>
         </div>
     </div>
 
@@ -80,6 +82,7 @@
 
         function startGame() {
             startBtn.style.display = "none"; // 隱藏開始按鈕
+            video.style.display = "block"; // 顯示影片
             video.play();
         }
 
@@ -88,7 +91,7 @@
             video.src = src;
             video.play();
             video.onended = () => {
-                exitFullscreenAndShowChoices();
+                showChoices();
             };
         }
 
@@ -97,26 +100,9 @@
             choices.style.display = "block";
         }
 
-        function exitFullscreenAndShowChoices() {
-            console.log("影片播放結束 - 嘗試退出全螢幕並顯示選項");
-
-            if (document.fullscreenElement) {
-                document.exitFullscreen().then(() => {
-                    console.log("成功退出全螢幕，顯示選項");
-                    showChoices();
-                }).catch((err) => {
-                    console.log("退出全螢幕失敗: " + err);
-                    showChoices();
-                });
-            } else {
-                showChoices();
-            }
-        }
-
-        // 當影片結束時，自動退出全螢幕並顯示選項
         video.onended = function () {
-            console.log("影片播放結束 - 嘗試退出全螢幕並顯示選項");
-            exitFullscreenAndShowChoices();
+            console.log("影片播放結束 - 嘗試顯示選項");
+            showChoices();
         };
     </script>
 </body>
