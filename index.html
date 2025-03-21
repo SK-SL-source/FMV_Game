@@ -73,51 +73,66 @@
         <button onclick="chooseScene('TEST001B.mp4')">選擇 2：去咖啡廳</button>
     </div>
 
-    <script>
-        let videoElement = document.getElementById("game-video");
-        let choicesDiv = document.getElementById("choices");
-        let startButton = document.getElementById("start-button");
+<script>
+    let videoElement = document.getElementById("game-video");
+    let choicesDiv = document.getElementById("choices");
+    let startButton = document.getElementById("start-button");
 
-        function startGame() {
-            startButton.style.display = "none"; // 隱藏開始遊戲按鈕
-            videoElement.style.display = "block"; // 顯示影片
-            videoElement.play(); // 播放影片
+    function startGame() {
+        startButton.style.display = "none"; // 隱藏開始遊戲按鈕
+        videoElement.style.display = "block"; // 顯示影片
+        videoElement.play(); // 播放影片
 
-            // 影片播放完畢後顯示選項
-            videoElement.onended = function () {
-                showChoicesInFullscreen();
-            };
+        // 影片播放完畢後顯示選項
+        videoElement.onended = function () {
+            console.log("影片播放結束"); // 確認事件有被觸發
+            showChoicesInFullscreen();
+        };
 
-            // 進入全螢幕模式
-            if (videoElement.requestFullscreen) {
-                videoElement.requestFullscreen();
-            } else if (videoElement.mozRequestFullScreen) {
-                videoElement.mozRequestFullScreen();
-            } else if (videoElement.webkitRequestFullscreen) {
-                videoElement.webkitRequestFullscreen();
-            } else if (videoElement.msRequestFullscreen) {
-                videoElement.msRequestFullscreen();
-            }
+        // 進入全螢幕模式
+        enterFullscreen(videoElement);
+    }
+
+    function showChoicesInFullscreen() {
+        console.log("進入 showChoicesInFullscreen()");
+        choicesDiv.style.display = "block"; // 顯示選項
+        choicesDiv.style.position = "fixed";
+        choicesDiv.style.top = "50%";
+        choicesDiv.style.left = "50%";
+        choicesDiv.style.transform = "translate(-50%, -50%)";
+        choicesDiv.style.background = "rgba(0, 0, 0, 0.8)";
+        choicesDiv.style.padding = "20px";
+        choicesDiv.style.borderRadius = "10px";
+        choicesDiv.style.textAlign = "center";
+    }
+
+    function chooseScene(videoFile) {
+        choicesDiv.style.display = "none"; // 隱藏選項
+        videoElement.src = videoFile;
+        videoElement.play();
+
+        videoElement.onended = function () {
+            showChoicesInFullscreen();
+        };
+    }
+
+    function enterFullscreen(element) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
         }
+    }
 
-        function showChoicesInFullscreen() {
-            if (document.fullscreenElement) {
-                choicesDiv.style.display = "block";
-            } else {
-                choicesDiv.style.display = "block";
-            }
+    // 監聽全螢幕變化
+    document.addEventListener("fullscreenchange", function() {
+        if (!document.fullscreenElement) {
+            console.log("退出全螢幕模式");
+            choicesDiv.style.display = "block";
         }
-
-        function chooseScene(videoFile) {
-            choicesDiv.style.display = "none"; // 隱藏選項
-            videoElement.src = videoFile;
-            videoElement.play();
-
-            videoElement.onended = function () {
-                showChoicesInFullscreen();
-            };
-        }
-    </script>
-</body>
-</html>
-
+    });
+</script>
