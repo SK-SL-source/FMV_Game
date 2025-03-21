@@ -45,21 +45,35 @@
             z-index: 1000;
             opacity: 1; /* 確保選項不會被隱藏 */
         }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background: white;
+            border: none;
+            border-radius: 5px;
+            color: black;
+        }
     </style>
 </head>
 <body>
     <h1>FMV 遊戲 Demo</h1>
 
+    <!-- 開始遊戲按鈕 -->
     <button id="start-button" onclick="startGame()">開始遊戲</button>
 
+    <!-- 影片播放 -->
     <video id="game-video" width="800" controls>
-        <source src="scene1.mp4" type="video/mp4">
+        <source src="./TEST001.mp4" type="video/mp4">
         你的瀏覽器不支援影片播放。
     </video>
 
+    <!-- 選項按鈕區 -->
     <div id="choices">
-        <button onclick="chooseScene('scene2.mp4')">選擇 1：去公園</button>
-        <button onclick="chooseScene('scene3.mp4')">選擇 2：去咖啡廳</button>
+        <button onclick="chooseScene('./TEST001A.mp4')">選擇 1：去公園</button>
+        <button onclick="chooseScene('./TEST001B.mp4')">選擇 2：去咖啡廳</button>
     </div>
 
     <script>
@@ -68,13 +82,16 @@
         let startButton = document.getElementById("start-button");
 
         function startGame() {
-            startButton.style.display = "none";
-            videoElement.style.display = "block";
-            videoElement.play();
+            console.log("遊戲開始 - 播放第一個影片");
+            startButton.style.display = "none"; // 隱藏開始遊戲按鈕
+            videoElement.style.display = "block"; // 顯示影片
+            videoElement.play(); // 播放影片
+
             videoElement.onended = function () {
                 console.log("影片播放結束 - 嘗試顯示選項");
                 showChoicesInFullscreen();
             };
+
             enterFullscreen(videoElement);
         }
 
@@ -86,9 +103,11 @@
         }
 
         function chooseScene(videoFile) {
-            choicesDiv.style.display = "none";
+            console.log("選擇了新場景：" + videoFile);
+            choicesDiv.style.display = "none"; // 隱藏選項
             videoElement.src = videoFile;
             videoElement.play();
+
             videoElement.onended = function () {
                 showChoicesInFullscreen();
             };
@@ -100,6 +119,14 @@
             else if (element.webkitRequestFullscreen) element.webkitRequestFullscreen();
             else if (element.msRequestFullscreen) element.msRequestFullscreen();
         }
+
+        document.addEventListener("fullscreenchange", function() {
+            console.log("偵測到全螢幕變化");
+            if (!document.fullscreenElement) {
+                console.log("退出全螢幕模式，顯示選項");
+                choicesDiv.style.display = "block";
+            }
+        });
     </script>
 </body>
 </html>
