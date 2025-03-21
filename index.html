@@ -51,21 +51,25 @@
         videoElement.src = videoFile;
         videoElement.play();
 
-        // 影片播放完畢後，檢查是否在全螢幕模式
+        // 影片播放完畢後，顯示選項
         videoElement.onended = function () {
-            if (document.fullscreenElement) {
-                document.addEventListener("fullscreenchange", handleFullscreenExit);
-            } else {
-                choicesDiv.style.display = "block"; // 直接顯示選項
-            }
+            showChoicesInFullscreen();
         };
     }
 
-    // 當全螢幕模式結束時，顯示選項
-    function handleFullscreenExit() {
-        if (!document.fullscreenElement) {
+    // 讓選項顯示在全螢幕模式
+    function showChoicesInFullscreen() {
+        if (document.fullscreenElement) {
+            choicesDiv.style.position = "fixed";
+            choicesDiv.style.top = "50%";
+            choicesDiv.style.left = "50%";
+            choicesDiv.style.transform = "translate(-50%, -50%)";
+            choicesDiv.style.background = "rgba(0, 0, 0, 0.8)";
+            choicesDiv.style.padding = "20px";
+            choicesDiv.style.borderRadius = "10px";
             choicesDiv.style.display = "block";
-            document.removeEventListener("fullscreenchange", handleFullscreenExit);
+        } else {
+            choicesDiv.style.display = "block";
         }
     }
 
@@ -74,12 +78,11 @@
         if (videoElement.requestFullscreen) {
             videoElement.requestFullscreen();
         } else if (videoElement.mozRequestFullScreen) {
-            videoElement.mozRequestFullScreen(); // Firefox
+            videoElement.mozRequestFullScreen();
         } else if (videoElement.webkitRequestFullscreen) {
-            videoElement.webkitRequestFullscreen(); // Chrome, Safari and Opera
+            videoElement.webkitRequestFullscreen();
         } else if (videoElement.msRequestFullscreen) {
-            videoElement.msRequestFullscreen(); // IE/Edge
+            videoElement.msRequestFullscreen();
         }
     });
 </script>
-
