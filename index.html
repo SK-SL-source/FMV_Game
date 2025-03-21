@@ -42,9 +42,26 @@
         }
 
         /* 讓開始遊戲按鈕完全置中 */
-        #start-button, #logout-button {
+        #start-button {
             padding: 15px 30px;
             font-size: 20px;
+            cursor: pointer;
+            background: white;
+            border: none;
+            border-radius: 5px;
+            color: black;
+            z-index: 10;
+            display: none;
+        }
+
+        /* 讓登出按鈕固定在畫面底部 */
+        #logout-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            font-size: 18px;
             cursor: pointer;
             background: white;
             border: none;
@@ -86,7 +103,7 @@
         <button onclick="login()">登入</button>
     </div>
 
-    <!-- 登出按鈕 -->
+    <!-- 登出按鈕（固定在畫面底部） -->
     <button id="logout-button" onclick="logout()">登出</button>
 
     <!-- 開始遊戲按鈕 -->
@@ -129,10 +146,8 @@
         }
 
         function logout() {
-            localStorage.removeItem("loggedIn");
-            loginContainer.style.display = "block";
-            startBtn.style.display = "none";
-            logoutBtn.style.display = "none";
+            localStorage.removeItem("loggedIn"); // 清除登入狀態
+            location.reload(); // 重新載入頁面，回到最初的登入畫面
         }
 
         function checkLoginStatus() {
