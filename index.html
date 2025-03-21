@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>FMV 遊戲 Demo</title>
     <style>
-        /* 讓內容置中 */
         body {
             display: flex;
             flex-direction: column;
@@ -18,30 +17,12 @@
             text-align: center;
         }
 
-        /* 預設隱藏影片 */
         video {
             display: none;
             width: 100%;
             max-width: 800px;
         }
 
-        /* 登入表單 */
-        #login-container {
-            background: white;
-            color: black;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        input {
-            display: block;
-            margin: 10px auto;
-            padding: 10px;
-            width: 200px;
-        }
-
-        /* 讓開始遊戲按鈕完全置中 */
         #start-button {
             padding: 15px 30px;
             font-size: 20px;
@@ -54,7 +35,6 @@
             display: none;
         }
 
-        /* 讓登出按鈕固定在畫面底部 */
         #logout-button {
             position: absolute;
             bottom: 20px;
@@ -71,7 +51,6 @@
             display: none;
         }
 
-        /* 選項區 */
         #choices {
             display: none;
             position: absolute;
@@ -95,7 +74,6 @@
 <body>
     <h1>FMV 遊戲 Demo</h1>
 
-    <!-- 登入表單 -->
     <div id="login-container">
         <h2>登入</h2>
         <input type="text" id="username" placeholder="帳號">
@@ -103,22 +81,17 @@
         <button onclick="login()">登入</button>
     </div>
 
-    <!-- 登出按鈕（固定在畫面底部） -->
     <button id="logout-button" onclick="logout()">登出</button>
-
-    <!-- 開始遊戲按鈕 -->
     <button id="start-button" onclick="startGame()">開始遊戲</button>
 
-    <!-- 影片 -->
     <video id="game-video" controls muted>
         <source src="TEST001.mp4" type="video/mp4">
         你的瀏覽器不支援影片播放。
     </video>
 
-    <!-- 選項 -->
     <div id="choices">
-        <button onclick="chooseScene('TEST001A.mp4')">選擇 1：口交</button>
-        <button onclick="chooseScene('TEST001B.mp4')">選擇 2：插入</button>
+        <button onclick="chooseScene('TEST001A.mp4')">選擇 1：去公園</button>
+        <button onclick="chooseScene('TEST001B.mp4')">選擇 2：去咖啡廳</button>
     </div>
 
     <script>
@@ -128,7 +101,6 @@
         const logoutBtn = document.getElementById("logout-button");
         const choices = document.getElementById("choices");
 
-        // 假帳號（可換成後端驗證）
         const validUser = { username: "user", password: "8888" };
 
         function login() {
@@ -146,8 +118,8 @@
         }
 
         function logout() {
-            localStorage.removeItem("loggedIn"); // 清除登入狀態
-            location.reload(); // 重新載入頁面，回到最初的登入畫面
+            localStorage.removeItem("loggedIn");
+            location.reload();
         }
 
         function checkLoginStatus() {
@@ -175,19 +147,20 @@
             };
         }
 
-        function showChoices() {
-            choices.style.display = "block";
-        }
-
         function exitFullscreenAndShowChoices() {
+            console.log("影片播放結束 - 嘗試退出全螢幕並顯示選項");
+
             if (document.fullscreenElement) {
                 document.exitFullscreen().then(() => {
-                    showChoices();
+                    console.log("成功退出全螢幕，顯示選項");
+                    setTimeout(() => { choices.style.display = "block"; }, 500);
                 }).catch((err) => {
-                    showChoices();
+                    console.log("退出全螢幕失敗: " + err);
+                    setTimeout(() => { choices.style.display = "block"; }, 500);
                 });
             } else {
-                showChoices();
+                console.log("未在全螢幕模式，直接顯示選項");
+                setTimeout(() => { choices.style.display = "block"; }, 500);
             }
         }
 
@@ -203,7 +176,11 @@
             }
         }
 
-        // 進入頁面時檢查登入狀態
+        video.onended = function () {
+            console.log("影片播放結束 - 呼叫 exitFullscreenAndShowChoices()");
+            exitFullscreenAndShowChoices();
+        };
+
         checkLoginStatus();
     </script>
 </body>
