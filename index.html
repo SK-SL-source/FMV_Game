@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>FMV 遊戲 Demo</title>
     <style>
-        /* 設定整個畫面置中 */
+        /* 讓按鈕與標題置中 */
         body {
             display: flex;
             flex-direction: column;
@@ -18,14 +18,14 @@
             text-align: center;
         }
 
-        /* 隱藏影片 */
+        /* 預設隱藏影片 */
         video {
             display: none;
             width: 100%;
             max-width: 800px;
         }
 
-        /* 讓「開始遊戲」按鈕完全置中 */
+        /* 讓開始遊戲按鈕完全置中 */
         #start-button {
             padding: 15px 30px;
             font-size: 20px;
@@ -72,8 +72,8 @@
 
     <!-- 選項 -->
     <div id="choices">
-        <button onclick="chooseScene('TEST001A.mp4')">選擇 1：去公園</button>
-        <button onclick="chooseScene('TEST001B.mp4')">選擇 2：去咖啡廳</button>
+        <button onclick="chooseScene('TEST001A.mp4')">選擇 1：口交</button>
+        <button onclick="chooseScene('TEST001B.mp4')">選擇 2：插入</button>
     </div>
 
     <script>
@@ -92,7 +92,7 @@
             video.src = src;
             video.play();
             video.onended = () => {
-                showChoices();
+                exitFullscreenAndShowChoices();
             };
         }
 
@@ -101,9 +101,26 @@
             choices.style.display = "block";
         }
 
+        function exitFullscreenAndShowChoices() {
+            console.log("影片播放結束 - 嘗試退出全螢幕並顯示選項");
+
+            if (document.fullscreenElement) {
+                document.exitFullscreen().then(() => {
+                    console.log("成功退出全螢幕，顯示選項");
+                    showChoices();
+                }).catch((err) => {
+                    console.log("退出全螢幕失敗: " + err);
+                    showChoices();
+                });
+            } else {
+                showChoices();
+            }
+        }
+
+        // 當影片結束時，自動退出全螢幕並顯示選項
         video.onended = function () {
-            console.log("影片播放結束 - 嘗試顯示選項");
-            showChoices();
+            console.log("影片播放結束 - 嘗試退出全螢幕並顯示選項");
+            exitFullscreenAndShowChoices();
         };
     </script>
 </body>
