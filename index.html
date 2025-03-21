@@ -5,11 +5,10 @@
     <title>FMV 遊戲 Demo</title>
     <style>
         body {
-            margin: 0;
+            text-align: center; 
+            font-family: Arial, sans-serif;
             background-color: black;
             color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
         }
 
         #video-container {
@@ -62,16 +61,12 @@
     <h1>FMV 遊戲 Demo</h1>
 
     <div id="video-container">
-        <!-- 開始按鈕 -->
         <button id="start-button" onclick="startGame()">開始遊戲</button>
-
-        <!-- 影片 -->
         <video id="game-video" controls muted>
             <source src="TEST001.mp4" type="video/mp4">
             你的瀏覽器不支援影片播放。
         </video>
 
-        <!-- 選項 -->
         <div id="choices">
             <button onclick="chooseScene('TEST001A.mp4')">選擇 1：口交</button>
             <button onclick="chooseScene('TEST001B.mp4')">選擇 2：插入</button>
@@ -84,40 +79,44 @@
         const choices = document.getElementById("choices");
 
         function startGame() {
-            startBtn.style.display = "none";
+            startBtn.style.display = "none"; // 隱藏開始按鈕
             video.play();
-            requestFullscreen(video);
         }
 
         function chooseScene(src) {
-            choices.style.display = "none";
+            choices.style.display = "none"; // 隱藏選項
             video.src = src;
             video.play();
             video.onended = () => {
-                showChoices();
+                exitFullscreenAndShowChoices();
             };
         }
 
         function showChoices() {
-            setTimeout(() => {
-                choices.style.display = "block";
-            }, 300);
+            console.log("影片結束 - 顯示選項");
+            choices.style.display = "block";
         }
 
-        function requestFullscreen(elem) {
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            } else if (elem.mozRequestFullScreen) {
-                elem.mozRequestFullScreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
+        function exitFullscreenAndShowChoices() {
+            console.log("影片播放結束 - 嘗試退出全螢幕並顯示選項");
+
+            if (document.fullscreenElement) {
+                document.exitFullscreen().then(() => {
+                    console.log("成功退出全螢幕，顯示選項");
+                    showChoices();
+                }).catch((err) => {
+                    console.log("退出全螢幕失敗: " + err);
+                    showChoices();
+                });
+            } else {
+                showChoices();
             }
         }
 
-        video.onended = () => {
-            showChoices();
+        // 當影片結束時，自動退出全螢幕並顯示選項
+        video.onended = function () {
+            console.log("影片播放結束 - 嘗試退出全螢幕並顯示選項");
+            exitFullscreenAndShowChoices();
         };
     </script>
 </body>
