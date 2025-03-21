@@ -72,8 +72,8 @@
 
     <!-- 選項 -->
     <div id="choices">
-        <button onclick="chooseScene('TEST001A.mp4')">選擇 1：口交</button>
-        <button onclick="chooseScene('TEST001B.mp4')">選擇 2：插入</button>
+        <button onclick="chooseScene('TEST001A.mp4')">選擇 1：去公園</button>
+        <button onclick="chooseScene('TEST001B.mp4')">選擇 2：去咖啡廳</button>
     </div>
 
     <script>
@@ -84,12 +84,14 @@
         function startGame() {
             startBtn.style.display = "none"; // 隱藏開始按鈕
             video.style.display = "block"; // 顯示影片
+            enterFullscreen(video); // 進入全螢幕
             video.play();
         }
 
         function chooseScene(src) {
             choices.style.display = "none"; // 隱藏選項
             video.src = src;
+            enterFullscreen(video); // 進入全螢幕
             video.play();
             video.onended = () => {
                 exitFullscreenAndShowChoices();
@@ -114,6 +116,18 @@
                 });
             } else {
                 showChoices();
+            }
+        }
+
+        function enterFullscreen(element) {
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
             }
         }
 
