@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>FMV 遊戲 Demo</title>
     <style>
-        /* 讓按鈕與標題置中 */
+        /* 讓內容置中 */
         body {
             display: flex;
             flex-direction: column;
@@ -25,8 +25,24 @@
             max-width: 800px;
         }
 
+        /* 登入表單 */
+        #login-container {
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        input {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: 200px;
+        }
+
         /* 讓開始遊戲按鈕完全置中 */
-        #start-button {
+        #start-button, #logout-button {
             padding: 15px 30px;
             font-size: 20px;
             cursor: pointer;
@@ -35,6 +51,7 @@
             border-radius: 5px;
             color: black;
             z-index: 10;
+            display: none;
         }
 
         /* 選項區 */
@@ -61,6 +78,17 @@
 <body>
     <h1>FMV 遊戲 Demo</h1>
 
+    <!-- 登入表單 -->
+    <div id="login-container">
+        <h2>登入</h2>
+        <input type="text" id="username" placeholder="帳號">
+        <input type="password" id="password" placeholder="密碼">
+        <button onclick="login()">登入</button>
+    </div>
+
+    <!-- 登出按鈕 -->
+    <button id="logout-button" onclick="logout()">登出</button>
+
     <!-- 開始遊戲按鈕 -->
     <button id="start-button" onclick="startGame()">開始遊戲</button>
 
@@ -79,45 +107,71 @@
     <script>
         const video = document.getElementById("game-video");
         const startBtn = document.getElementById("start-button");
+        const loginContainer = document.getElementById("login-container");
+        const logoutBtn = document.getElementById("logout-button");
         const choices = document.getElementById("choices");
 
+        // 假帳號（可換成後端驗證）
+        const validUser = { username: "user", password: "8888" };
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            if (username === validUser.username && password === validUser.password) {
+                localStorage.setItem("loggedIn", "true");
+                loginContainer.style.display = "none";
+                startBtn.style.display = "block";
+                logoutBtn.style.display = "block";
+            } else {
+                alert("帳號或密碼錯誤！");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("loggedIn");
+            loginContainer.style.display = "block";
+            startBtn.style.display = "none";
+            logoutBtn.style.display = "none";
+        }
+
+        function checkLoginStatus() {
+            if (localStorage.getItem("loggedIn") === "true") {
+                loginContainer.style.display = "none";
+                startBtn.style.display = "block";
+                logoutBtn.style.display = "block";
+            }
+        }
+
         function startGame() {
-            startBtn.style.display = "none"; // 隱藏開始按鈕
-            video.style.display = "block"; // 顯示影片
-            enterFullscreen(video); // 進入全螢幕並橫屏
+            startBtn.style.display = "none";
+            video.style.display = "block";
+            enterFullscreen(video);
             video.play();
         }
 
         function chooseScene(src) {
-            choices.style.display = "none"; // 隱藏選項
+            choices.style.display = "none";
             video.src = src;
-            enterFullscreen(video); // 進入全螢幕並橫屏
+            enterFullscreen(video);
             video.play();
             video.onended = () => {
-                exitFullscreenAndKeepLandscape();
+                exitFullscreenAndShowChoices();
             };
         }
 
         function showChoices() {
-            console.log("影片結束 - 顯示選項");
             choices.style.display = "block";
         }
 
-        function exitFullscreenAndKeepLandscape() {
-            console.log("影片播放結束 - 嘗試退出全螢幕並保持橫屏");
-
+        function exitFullscreenAndShowChoices() {
             if (document.fullscreenElement) {
                 document.exitFullscreen().then(() => {
-                    console.log("成功退出全螢幕，顯示選項");
-                    lockLandscape(); // 退出全螢幕後，強制保持橫屏
                     showChoices();
                 }).catch((err) => {
-                    console.log("退出全螢幕失敗: " + err);
-                    lockLandscape();
                     showChoices();
                 });
             } else {
-                lockLandscape();
                 showChoices();
             }
         }
@@ -132,23 +186,10 @@
             } else if (element.msRequestFullscreen) {
                 element.msRequestFullscreen();
             }
-
-            lockLandscape(); // 進入全螢幕時，切換橫屏
         }
 
-        function lockLandscape() {
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock("landscape").catch(err => {
-                    console.log("無法鎖定橫屏:", err);
-                });
-            }
-        }
-
-        // 當影片結束時，自動退出全螢幕並保持橫屏
-        video.onended = function () {
-            console.log("影片播放結束 - 嘗試退出全螢幕並保持橫屏");
-            exitFullscreenAndKeepLandscape();
-        };
+        // 進入頁面時檢查登入狀態
+        checkLoginStatus();
     </script>
 </body>
 </html>
